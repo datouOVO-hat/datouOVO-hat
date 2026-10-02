@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4" style="max-width: 650px;">
+    <div class="card nordic-card p-4 shadow-sm">
+        <h3 class="fw-bold mb-3"><i class="bi bi-plus-circle text-success me-2"></i>アイテムの登録</h3>
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">アイテム名 <span class="text-danger">*</span></label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">商品説明</label>
+                <textarea name="description" class="form-control" rows="4"></textarea>
+            </div>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">価格 (円) <span class="text-danger">*</span></label>
+                    <input type="number" name="price" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">在庫数 <span class="text-danger">*</span></label>
+                    <input type="number" name="stock" class="form-control" value="10" required>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">画像パス (未入力時は no-image.png)</label>
+                <input type="text" name="image" class="form-control" placeholder="products/bag_lady/Image_fx (1).jpg">
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold d-block">タグ</label>
+                <div class="d-flex flex-wrap gap-2 p-3 bg-light rounded border">
+                    {% for tag in all_tags %}
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="tag_ids" value="{{ tag.id }}" id="t_{{ tag.id }}">
+                            <label class="form-check-label small" for="t_{{ tag.id }}">{{ tag.name }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-nordic w-100 rounded-pill py-2 fw-bold">登録する</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

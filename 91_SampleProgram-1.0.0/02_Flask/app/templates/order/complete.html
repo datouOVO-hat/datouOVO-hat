@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 text-center" style="max-width: 600px;">
+    <div class="card nordic-card p-5 shadow-sm">
+        <i class="bi bi-check-circle-fill text-success fs-1 mb-3"></i>
+        <h2 class="fw-bold mb-2">ご注文ありがとうございます</h2>
+        <p class="text-muted mb-4">注文番号: #{{ order.order_number }}</p>
+        <a href="{{ url_for('main.product_list') }}" class="btn btn-nordic rounded-pill px-4">トップへ戻る</a>
+    </div>
+</div>
+{% endblock %}

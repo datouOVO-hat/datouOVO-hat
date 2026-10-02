@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5" style="max-width: 460px;">
+    <div class="card nordic-card p-4 shadow-sm">
+        <h3 class="fw-bold text-center mb-3">新規会員登録</h3>
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">ユーザー名</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-6"><label class="form-label fw-bold small">姓</label><input type="text" name="last_name" class="form-control" required></div>
+                <div class="col-6"><label class="form-label fw-bold small">名</label><input type="text" name="first_name" class="form-control" required></div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">メール</label>
+                <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold small">パスワード</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-nordic w-100 rounded-pill py-2 fw-bold">登録する</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

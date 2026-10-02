@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}購入履歴 - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold d-flex align-items-center gap-2 mb-0">
+            <i class="bi bi-receipt text-primary"></i> ご購入履歴
+        </h2>
+        <a href="{% url 'shop:mypage' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+            <i class="bi bi-arrow-left me-1"></i> マイページへ
+        </a>
+    </div>
+
+    {% if orders %}
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">注文番号</th>
+                            <th scope="col">注文日時</th>
+                            <th scope="col">商品点数</th>
+                            <th scope="col">支払方法</th>
+                            <th scope="col" class="text-end">合計金額</th>
+                            <th scope="col" class="text-center">ステータス</th>
+                            <th scope="col" class="text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                            <tr>
+                                <td class="fw-bold text-dark">#{{ order.order_number }}</td>
+                                <td class="text-secondary small">{{ order.created_at|date:"Y/m/d H:i" }}</td>
+                                <td>{{ order.items.count }} 点</td>
+                                <td><span class="badge bg-light text-dark border">{{ order.get_payment_method_display }}</span></td>
+                                <td class="text-end fw-bold text-primary">&yen;{{ order.total_price|floatformat:"0" }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <a href="{% url 'shop:order_detail' order.order_number %}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        詳細
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm rounded-4 py-5 text-center">
+            <div class="text-muted mb-3">
+                <i class="bi bi-bag-x fs-1"></i>
+            </div>
+            <h4 class="fw-bold">ご購入履歴はありません</h4>
+            <p class="text-secondary">気になる商品を探して、お買い物を楽しんでみませんか？</p>
+            <div class="mt-3">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary rounded-pill px-4">
+                    商品を探す
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

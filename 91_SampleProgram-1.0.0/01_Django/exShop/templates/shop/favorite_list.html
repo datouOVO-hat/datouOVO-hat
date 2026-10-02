@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}お気に入り商品一覧 - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold d-flex align-items-center gap-2 mb-0">
+            <i class="bi bi-heart-fill text-danger"></i> お気に入り商品一覧
+        </h2>
+        <span class="text-secondary small">{{ favorites.count }} 件登録中</span>
+    </div>
+
+    {% if favorites %}
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            {% for fav in favorites %}
+                {% with product=fav.product %}
+                    <div class="col">
+                        <div class="card h-100 product-card border-0 shadow-sm position-relative">
+                            <!-- Remove Favorite -->
+                            <a href="{% url 'shop:favorite_toggle' product.id %}" 
+                               class="favorite-btn active" 
+                               title="お気に入りから削除">
+                                <i class="bi bi-heart-fill text-danger"></i>
+                            </a>
+
+                            <!-- Image -->
+                            <a href="{% url 'shop:product_detail' product.id %}" class="product-img-wrapper text-decoration-none">
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" loading="lazy">
+                            </a>
+
+                            <!-- Body -->
+                            <div class="card-body d-flex flex-column p-3">
+                                <div class="mb-2 d-flex flex-wrap gap-1">
+                                    {% for tag in product.tags.all %}
+                                        <span class="badge bg-{{ tag.color }} badge-tag">{{ tag.name }}</span>
+                                    {% endfor %}
+                                </div>
+
+                                <h6 class="card-title fw-bold mb-1 text-truncate">
+                                    <a href="{% url 'shop:product_detail' product.id %}" class="text-dark text-decoration-none" title="{{ product.name }}">
+                                        {{ product.name }}
+                                    </a>
+                                </h6>
+
+                                <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+                                    <span class="fs-5 fw-bold text-dark">&yen;{{ product.price|floatformat:"0" }}</span>
+                                    {% if product.is_in_stock %}
+                                        <form action="{% url 'shop:cart_add' product.id %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <input type="hidden" name="override" value="False">
+                                            <button type="submit" class="btn btn-warning btn-sm rounded-pill px-3 fw-semibold">
+                                                <i class="bi bi-cart-plus"></i> カートへ
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <span class="badge bg-secondary-subtle text-secondary rounded-pill">売り切れ</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm rounded-4 py-5 text-center">
+            <div class="text-muted mb-3">
+                <i class="bi bi-heart fs-1"></i>
+            </div>
+            <h4 class="fw-bold">お気に入り商品はありません</h4>
+            <p class="text-secondary">気になる商品のハートアイコンをクリックすると、ここに追加されます。</p>
+            <div class="mt-3">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary rounded-pill px-4">
+                    商品を探す
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

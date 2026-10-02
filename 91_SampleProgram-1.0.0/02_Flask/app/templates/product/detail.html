@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+    <div class="row g-5">
+        <div class="col-lg-6">
+            <div class="card nordic-card p-3 shadow-sm text-center">
+                <img src="{{ url_for('main.media_file', filename=product.image_url.replace('media/', '')) }}" class="img-fluid rounded" style="max-height: 480px; width: 100%; object-fit: contain;">
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex flex-column">
+            <div class="mb-2 d-flex flex-wrap gap-1">
+                {% for tag in product.tags %}
+                    <span class="nordic-tag">{{ tag.name }}</span>
+                {% endfor %}
+            </div>
+            <h1 class="h2 fw-bold text-dark mb-3">{{ product.name }}</h1>
+            <div class="p-3 bg-white rounded border mb-4 shadow-sm">
+                <span class="display-6 fw-bold text-success">&yen;{{ "{:,}".format(product.price) }}</span>
+                <span class="text-muted small ms-2">(税込・配送料無料)</span>
+            </div>
+            <h5 class="fw-bold mb-2">商品説明</h5>
+            <div class="text-muted lh-lg mb-4" style="white-space: pre-line;">{{ product.description }}</div>
+
+            {% if product.is_in_stock %}
+                <form action="{{ url_for('main.cart_add', product_id=product.id) }}" method="post" class="mt-auto pt-3 border-top">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-auto"><label class="fw-bold">数量:</label></div>
+                        <div class="col-auto">
+                            <select name="quantity" class="form-select">
+                                {% for i in range(1, 11) %}
+                                    {% if i <= product.stock %}
+                                        <option value="{{ i }}">{{ i }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <button type="submit" class="btn btn-nordic btn-lg w-100 rounded-pill shadow-sm">
+                                <i class="bi bi-basket me-2"></i> バスケットに追加
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Database
+# db.sqlite3 (配布時は初期データ入りを含めるか、load_sample_dataコマンドで生成させる)
+
+# Static & Media
+staticfiles/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store

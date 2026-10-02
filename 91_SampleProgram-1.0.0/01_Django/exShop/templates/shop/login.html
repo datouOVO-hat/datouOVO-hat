@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}ログイン - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 460px;">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-dark text-white text-center py-4">
+            <h3 class="fw-bold mb-1">ログイン</h3>
+            <p class="text-secondary small mb-0">exShopアカウントにサインイン</p>
+        </div>
+        <div class="card-body p-4">
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="{{ form.username.id_for_label }}" class="form-label fw-bold small">ユーザー名</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" name="username" class="form-control" autofocus required id="{{ form.username.id_for_label }}">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="{{ form.password.id_for_label }}" class="form-label fw-bold small">パスワード</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" name="password" class="form-control" required id="{{ form.password.id_for_label }}">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold shadow-sm">
+                    ログイン
+                </button>
+            </form>
+
+            <div class="text-center mt-4 pt-3 border-top">
+                <span class="text-secondary small">アカウントをお持ちでないですか？</span>
+                <a href="{% url 'shop:signup' %}" class="small text-decoration-none fw-bold ms-1">無料会員登録</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

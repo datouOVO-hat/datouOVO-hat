@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}ショッピングカート - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-cart3 text-primary"></i> ショッピングカート
+    </h2>
+
+    {% if cart %}
+        <div class="row g-4">
+            <!-- Cart Items List -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" style="min-width: 250px;">商品</th>
+                                    <th scope="col" class="text-center">単価</th>
+                                    <th scope="col" class="text-center" style="width: 140px;">数量</th>
+                                    <th scope="col" class="text-end">小計</th>
+                                    <th scope="col" class="text-center" style="width: 60px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                    {% with product=item.product %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="rounded-3 border" style="width: 64px; height: 64px; object-fit: cover;">
+                                                    <div>
+                                                        <h6 class="mb-1 fw-bold">
+                                                            <a href="{% url 'shop:product_detail' product.id %}" class="text-dark text-decoration-none">
+                                                                {{ product.name }}
+                                                            </a>
+                                                        </h6>
+                                                        <div class="d-flex gap-1">
+                                                            {% for tag in product.tags.all|slice:":2" %}
+                                                                <span class="badge bg-light text-secondary border" style="font-size: 0.7rem;">{{ tag.name }}</span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-center fw-semibold text-secondary">
+                                                &yen;{{ item.price|floatformat:"0" }}
+                                            </td>
+                                            <td>
+                                                <form action="{% url 'shop:cart_add' product.id %}" method="post" class="d-flex align-items-center justify-content-center gap-1">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="override" value="True">
+                                                    <select name="quantity" class="form-select form-select-sm" style="width: 70px;" onchange="this.form.submit()">
+                                                        {% for i in "12345678910"|make_list %}
+                                                            <option value="{{ forloop.counter }}" {% if item.quantity == forloop.counter %}selected{% endif %}>
+                                                                {{ forloop.counter }}
+                                                            </option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </form>
+                                            </td>
+                                            <td class="text-end fw-bold text-dark fs-6">
+                                                &yen;{{ item.total_price|floatformat:"0" }}
+                                            </td>
+                                            <td class="text-center">
+                                                <form action="{% url 'shop:cart_remove' product.id %}" method="post">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="カートから削除">
+                                                        <i class="bi bi-trash3 fs-5"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endwith %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                        <i class="bi bi-arrow-left me-1"></i> お買い物を続ける
+                    </a>
+                </div>
+            </div>
+
+            <!-- Order Summary Card -->
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
+                    <h5 class="fw-bold mb-3">ご注文の概要</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">商品小計</span>
+                        <span class="fw-bold">&yen;{{ cart.get_total_price|floatformat:"0" }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-secondary">配送料</span>
+                        <span class="text-success fw-bold">無料</span>
+                    </div>
+                    <hr class="my-3">
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fs-5 fw-bold">お支払い合計</span>
+                        <span class="fs-3 fw-bold text-primary">&yen;{{ cart.get_total_price|floatformat:"0" }}</span>
+                    </div>
+
+                    <a href="{% url 'shop:checkout' %}" class="btn btn-warning btn-lg w-100 rounded-pill fw-bold shadow-sm d-flex align-items-center justify-content-center gap-2">
+                        購入手続きへ進む <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                    <div class="mt-4 p-3 bg-light rounded-3 text-secondary small">
+                        <i class="bi bi-shield-check text-success me-1"></i>
+                        SSL暗号化通信により、お客様の個人情報は安全に保護されます。
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm rounded-4 py-5 text-center">
+            <div class="text-muted mb-3">
+                <i class="bi bi-cart-x fs-1"></i>
+            </div>
+            <h4 class="fw-bold">カートは空です</h4>
+            <p class="text-secondary">気になる商品を探して、カートに追加してみましょう！</p>
+            <div class="mt-3">
+                <a href="{% url 'shop:product_list' %}" class="btn btn-primary rounded-pill px-4">
+                    商品一覧を見る
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}ご注文手続き - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="fw-bold mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-credit-card-2-front text-primary"></i> ご注文手続き
+    </h2>
+
+    <div class="row g-4">
+        <!-- Delivery and Payment Form -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-dark text-white p-3">
+                    <h5 class="fw-bold mb-0"><i class="bi bi-geo-alt me-2"></i>お届け先・お客様情報の入力</h5>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" id="checkout-form">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="mb-3">
+                            <label for="{{ form.full_name.id_for_label }}" class="form-label fw-bold">お名前 <span class="text-danger">*</span></label>
+                            {{ form.full_name }}
+                            {% if form.full_name.errors %}<div class="text-danger small mt-1">{{ form.full_name.errors }}</div>{% endif %}
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-bold">メールアドレス <span class="text-danger">*</span></label>
+                                {{ form.email }}
+                                {% if form.email.errors %}<div class="text-danger small mt-1">{{ form.email.errors }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-bold">電話番号 <span class="text-danger">*</span></label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.errors %}<div class="text-danger small mt-1">{{ form.phone_number.errors }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="{{ form.postal_code.id_for_label }}" class="form-label fw-bold">郵便番号 <span class="text-danger">*</span></label>
+                                {{ form.postal_code }}
+                                {% if form.postal_code.errors %}<div class="text-danger small mt-1">{{ form.postal_code.errors }}</div>{% endif %}
+                            </div>
+                            <div class="col-md-8">
+                                <label for="{{ form.address.id_for_label }}" class="form-label fw-bold">ご住所 <span class="text-danger">*</span></label>
+                                {{ form.address }}
+                                {% if form.address.errors %}<div class="text-danger small mt-1">{{ form.address.errors }}</div>{% endif %}
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="fw-bold mb-3"><i class="bi bi-wallet2 me-2"></i>お支払い方法</h5>
+                        <div class="mb-4">
+                            {{ form.payment_method }}
+                            {% if form.payment_method.errors %}<div class="text-danger small mt-1">{{ form.payment_method.errors }}</div>{% endif %}
+                            <div class="form-text text-muted mt-2">
+                                ※ 本サイトは学習・演習用サンプルのため、実際の金銭の引き落とし等は行われません。
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                            <a href="{% url 'shop:cart_detail' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="bi bi-arrow-left me-1"></i> カートに戻る
+                            </a>
+                            <button type="submit" class="btn btn-warning btn-lg rounded-pill px-5 fw-bold shadow-sm">
+                                注文を確定する <i class="bi bi-check2-circle ms-1"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
+                <h5 class="fw-bold mb-3">ご注文商品（{{ cart|length }} 点）</h5>
+                
+                <div class="overflow-auto mb-3 pe-1" style="max-height: 350px;">
+                    {% for item in cart %}
+                        <div class="d-flex align-items-center gap-3 py-2 border-bottom">
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="rounded-2 border" style="width: 50px; height: 50px; object-fit: cover;">
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold text-truncate" style="max-width: 200px;">{{ item.product.name }}</div>
+                                <span class="text-secondary small">&yen;{{ item.price }} &times; {{ item.quantity }}</span>
+                            </div>
+                            <div class="fw-bold text-dark">&yen;{{ item.total_price }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary">小計</span>
+                    <span class="fw-bold">&yen;{{ cart.get_total_price|floatformat:"0" }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-secondary">配送料</span>
+                    <span class="text-success fw-bold">無料</span>
+                </div>
+                <hr class="my-3">
+                <div class="d-flex justify-content-between align-items-baseline mb-3">
+                    <span class="fs-5 fw-bold">お支払い合計</span>
+                    <span class="fs-3 fw-bold text-primary">&yen;{{ cart.get_total_price|floatformat:"0" }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

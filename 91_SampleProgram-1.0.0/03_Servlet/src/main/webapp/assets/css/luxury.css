@@ -1,0 +1,139 @@
+/* exShop Luxury Edition - Navy & Champagne Gold Theme */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif+JP:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-navy: #0b132b;
+    --navy-light: #1c2541;
+    --gold: #c5a059;
+    --gold-light: #dfba73;
+    --gold-subtle: #fcf9f2;
+    --gold-border: #e2d2b4;
+    --bg-creme: #fcfbfa;
+    --text-dark: #1f242e;
+    --text-muted: #64748b;
+}
+
+body {
+    background-color: var(--bg-creme);
+    color: var(--text-dark);
+    font-family: 'Plus Jakarta Sans', 'Noto Serif JP', -apple-system, sans-serif;
+    letter-spacing: 0.01em;
+}
+
+h1, h2, h3, .brand-font {
+    font-family: 'Cinzel', 'Noto Serif JP', serif;
+    letter-spacing: 0.05em;
+}
+
+/* Luxury Navbar */
+.navbar-luxury {
+    background-color: var(--primary-navy) !important;
+    border-bottom: 2px solid var(--gold);
+}
+
+.brand-gold {
+    color: var(--gold-light) !important;
+    font-weight: 700;
+}
+
+/* Luxury Hero Banner */
+.hero-luxury {
+    background: linear-gradient(135deg, #0b132b 0%, #1c2541 60%, #3a506b 100%);
+    color: #ffffff;
+    border-radius: 16px;
+    padding: 4.5rem 2rem;
+    border: 1px solid var(--gold);
+    box-shadow: 0 16px 36px rgba(11, 19, 43, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-luxury::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(197, 160, 89, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+/* Luxury Buttons */
+.btn-gold {
+    background: linear-gradient(135deg, #dfba73 0%, #c5a059 100%);
+    color: #0b132b !important;
+    font-weight: 600;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background: linear-gradient(135deg, #ebd094 0%, #d4ae67 100%);
+    box-shadow: 0 6px 16px rgba(197, 160, 89, 0.35);
+    transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+    border: 1px solid var(--gold);
+    color: var(--gold-light) !important;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+    background: var(--gold);
+    color: #0b132b !important;
+}
+
+/* Product Card */
+.luxury-card {
+    background: #ffffff;
+    border: 1px solid rgba(226, 210, 180, 0.6);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.luxury-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(11, 19, 43, 0.08);
+    border-color: var(--gold);
+}
+
+.luxury-img-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    background-color: #f7f6f4;
+    overflow: hidden;
+}
+
+.luxury-img-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.luxury-card:hover .luxury-img-wrapper img {
+    transform: scale(1.06);
+}
+
+.gold-badge {
+    background: var(--gold-subtle);
+    color: #8c6a28;
+    border: 1px solid var(--gold-border);
+    font-size: 0.72rem;
+    padding: 0.35em 0.75em;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+.price-gold {
+    color: #8c6a28;
+    font-weight: 700;
+}
