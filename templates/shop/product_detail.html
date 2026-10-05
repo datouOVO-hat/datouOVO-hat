@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'shop:product_list' %}" class="text-decoration-none">トップ</a></li>
+            {% if product.tags.first %}
+                <li class="breadcrumb-item">
+                    <a href="{% url 'shop:product_list' %}?tag={{ product.tags.first.slug }}" class="text-decoration-none">
+                        {{ product.tags.first.name }}
+                    </a>
+                </li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name|truncatechars:25 }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Product Image -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm overflow-hidden rounded-4">
+                <div class="position-relative bg-white text-center p-3">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid rounded-3" style="max-height: 480px; width: 100%; object-fit: contain;">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'shop:favorite_toggle' product.id %}" 
+                           class="favorite-btn shadow {% if is_favorite %}active{% endif %}" 
+                           title="お気に入りに追加/解除" 
+                           style="top: 20px; right: 20px; width: 44px; height: 44px;">
+                            <i class="bi {% if is_favorite %}bi-heart-fill text-danger fs-5{% else %}bi-heart fs-5{% endif %}"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Information -->
+        <div class="col-lg-6">
+            <div class="d-flex flex-column h-100">
+                <!-- Tags -->
+                <div class="mb-3 d-flex flex-wrap gap-1">
+                    {% for tag in product.tags.all %}
+                        <a href="{% url 'shop:product_list' %}?tag={{ tag.slug }}" class="badge bg-{{ tag.color }} text-decoration-none px-2 py-1">
+                            {{ tag.name }}
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <!-- Product Name -->
+                <h1 class="h2 fw-bold text-dark mb-3">{{ product.name }}</h1>
+
+                <!-- Price and Stock -->
+                <div class="p-3 bg-white rounded-3 border shadow-sm mb-4">
+                    <div class="d-flex align-items-baseline gap-2 mb-2">
+                        <span class="display-6 fw-bold text-primary">&yen;{{ product.price|floatformat:"0" }}</span>
+                        <span class="text-secondary small">(税込・送料無料)</span>
+                    </div>
+                    <div>
+                        {% if product.is_in_stock %}
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill">
+                                <i class="bi bi-check-circle me-1"></i> 在庫あり（残り {{ product.stock }} 点）
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-1 rounded-pill">
+                                <i class="bi bi-x-circle me-1"></i> 売り切れ
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <h5 class="fw-bold mb-2">商品説明</h5>
+                    <div class="text-secondary lh-lg" style="white-space: pre-line;">
+                        {{ product.description|default:"商品説明の詳細は登録されていません。" }}
+                    </div>
+                </div>
+
+                <!-- Add to Cart Form -->
+                {% if product.is_in_stock %}
+                    <form action="{% url 'shop:cart_add' product.id %}" method="post" class="mt-auto pt-3 border-top">
+                        {% csrf_token %}
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="id_quantity" class="col-form-label fw-bold">数量:</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="quantity" id="id_quantity" class="form-select">
+                                    {% for i in "12345678910"|make_list %}
+                                        {% if forloop.counter <= product.stock %}
+                                            <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-warning btn-lg w-100 fw-bold rounded-pill shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-cart-plus-fill fs-5"></i> カートに追加する
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="mt-auto pt-3 border-top">
+                        <button class="btn btn-secondary btn-lg w-100 rounded-pill" disabled>
+                            現在在庫切れです
+                        </button>
+                    </div>
+                {% endif %}
+
+                <!-- Staff Edit Controls -->
+                {% if user.is_staff %}
+                    <div class="mt-3 p-3 bg-light rounded border text-muted small d-flex justify-content-between align-items-center">
+                        <span><i class="bi bi-gear me-1"></i> 管理者メニュー</span>
+                        <a href="{% url 'shop:product_edit' product.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil-square"></i> 商品情報を編集
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Products -->
+    {% if related_products %}
+        <div class="mt-5 pt-5 border-top">
+            <h3 class="fw-bold mb-4">こちらの関連商品もおすすめ</h3>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+                {% for item in related_products %}
+                    <div class="col">
+                        <div class="card h-100 product-card border-0 shadow-sm">
+                            <a href="{% url 'shop:product_detail' item.id %}" class="product-img-wrapper text-decoration-none">
+                                <img src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy">
+                            </a>
+                            <div class="card-body p-3">
+                                <h6 class="card-title text-truncate mb-1">
+                                    <a href="{% url 'shop:product_detail' item.id %}" class="text-dark text-decoration-none">
+                                        {{ item.name }}
+                                    </a>
+                                </h6>
+                                <p class="text-primary fw-bold mb-0">&yen;{{ item.price }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

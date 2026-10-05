@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}ご注文完了 - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center" style="max-width: 680px;">
+    <div class="card border-0 shadow-sm rounded-4 p-5">
+        <div class="mb-4">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+        </div>
+        <h2 class="fw-bold mb-2">ご注文ありがとうございます！</h2>
+        <p class="text-secondary mb-4">
+            ご注文手続きが正常に完了いたしました。<br>
+            登録されたメールアドレス（<strong>{{ order.email }}</strong>）宛てに確認メールを送信いたしました。
+        </p>
+
+        <div class="p-3 bg-light rounded-3 text-start mb-4 border">
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">注文番号:</span>
+                <span class="fw-bold text-dark">#{{ order.order_number }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">ご注文日時:</span>
+                <span>{{ order.created_at|date:"Y年m月d日 H:i" }}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-secondary">お支払い方法:</span>
+                <span>{{ order.get_payment_method_display }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-secondary">合計金額:</span>
+                <span class="fw-bold text-primary fs-5">&yen;{{ order.total_price|floatformat:"0" }}</span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'shop:product_list' %}" class="btn btn-primary rounded-pill px-4">
+                お買い物を続ける
+            </a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'shop:order_list' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                    購入履歴を見る
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

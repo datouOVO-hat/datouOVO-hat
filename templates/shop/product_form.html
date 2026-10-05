@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - exShop{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 720px;">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-dark text-white p-4">
+            <h3 class="fw-bold mb-1"><i class="bi bi-box-seam me-2"></i>{{ title }}</h3>
+            <p class="text-secondary small mb-0">ECショップに出品する商品の詳細を入力してください。</p>
+        </div>
+        <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <!-- Name -->
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label fw-bold">
+                        商品名 <span class="text-danger">*</span>
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<div class="text-danger small mt-1">{{ form.name.errors }}</div>{% endif %}
+                </div>
+
+                <!-- Description -->
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label fw-bold">商品説明</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}<div class="text-danger small mt-1">{{ form.description.errors }}</div>{% endif %}
+                </div>
+
+                <!-- Price and Stock -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="{{ form.price.id_for_label }}" class="form-label fw-bold">
+                            販売価格 (円) <span class="text-danger">*</span>
+                        </label>
+                        {{ form.price }}
+                        {% if form.price.errors %}<div class="text-danger small mt-1">{{ form.price.errors }}</div>{% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.stock.id_for_label }}" class="form-label fw-bold">
+                            在庫数 <span class="text-danger">*</span>
+                        </label>
+                        {{ form.stock }}
+                        {% if form.stock.errors %}<div class="text-danger small mt-1">{{ form.stock.errors }}</div>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Image -->
+                <div class="mb-3">
+                    <label for="{{ form.image.id_for_label }}" class="form-label fw-bold">商品画像</label>
+                    {{ form.image }}
+                    <div class="form-text text-muted">
+                        <i class="bi bi-info-circle"></i> 画像が指定されない場合は、自動的にデフォルト画像（<code>no-image.png</code>）が適用されます。
+                    </div>
+                    {% if form.image.errors %}<div class="text-danger small mt-1">{{ form.image.errors }}</div>{% endif %}
+                </div>
+
+                <!-- Tags -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold d-block">タグの選択</label>
+                    <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded border">
+                        {% for choice in form.tags %}
+                            <div class="form-check">
+                                {{ choice.tag }}
+                                <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                    {{ choice.choice_label }}
+                                </label>
+                            </div>
+                        {% empty %}
+                            <span class="text-muted small">登録されているタグがありません</span>
+                        {% endfor %}
+                    </div>
+                    {% if form.tags.errors %}<div class="text-danger small mt-1">{{ form.tags.errors }}</div>{% endif %}
+                </div>
+
+                <!-- Is Active -->
+                <div class="form-check form-switch mb-4">
+                    {{ form.is_active }}
+                    <label class="form-check-label fw-semibold" for="{{ form.is_active.id_for_label }}">
+                        ショップに公開する
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <a href="{% url 'shop:product_list' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                        キャンセル
+                    </a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 fw-bold">
+                        <i class="bi bi-check-lg me-1"></i> {% if is_edit %}更新する{% else %}商品を登録する{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
